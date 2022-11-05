@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     
     public bool canJump;
 
+
     public bool testing;
     // Start is called before the first frame update
     void Start()
@@ -32,8 +33,16 @@ public class PlayerMovement : MonoBehaviour
             }
 
         }
-        if (Input.GetKey(KeyCode.Space) && canJump) {
-            rb.AddForce(transform.up * jumpForce);
+        if (Input.GetKey(KeyCode.Space) && canJump && GameManager.GetComponent<GameManager>().gameOver == false) {
+            rb.velocity = transform.up * jumpForce;
+        }
+
+        if (rb.position.y <= -3.808498f)
+        {
+            canJump = true;
+        }
+        else
+        {
             canJump = false;
         }
         rb.velocity = new Vector2 (moveInput * movementSpeed, rb.velocity.y);
@@ -43,5 +52,12 @@ public class PlayerMovement : MonoBehaviour
         if (col2D.gameObject.tag == "Ground") {
             canJump = true;
         }
+        if (col2D.gameObject.tag == "Death")
+        {
+            GameManager.GetComponent<GameManager>().gameOver = true;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            Debug.Log("Dead");
+        }
     }
+
 }
